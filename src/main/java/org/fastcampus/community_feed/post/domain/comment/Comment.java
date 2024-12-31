@@ -1,8 +1,10 @@
 package org.fastcampus.community_feed.post.domain.comment;
 
+import java.util.Objects;
+import org.fastcampus.community_feed.common.domain.PositiveIntegerCounter;
 import org.fastcampus.community_feed.post.domain.Post;
+import org.fastcampus.community_feed.post.domain.content.CommentContent;
 import org.fastcampus.community_feed.post.domain.content.Content;
-import org.fastcampus.community_feed.post.domain.like.LikeCounter;
 import org.fastcampus.community_feed.user.domain.User;
 
 public class Comment {
@@ -11,10 +13,10 @@ public class Comment {
     private final Post post;
     private final User author;
     private final Content content;
-    private final LikeCounter likeCounter;
+    private final PositiveIntegerCounter positiveIntegerCounter;
 
     public Comment(Long id, Post post, User author, Content content,
-        LikeCounter likeCounter) {
+        PositiveIntegerCounter positiveIntegerCounter) {
         if (post == null) {
             throw new IllegalArgumentException("post should not be null");
         }
@@ -29,11 +31,15 @@ public class Comment {
         this.post = post;
         this.author = author;
         this.content = content;
-        this.likeCounter = likeCounter;
+        this.positiveIntegerCounter = positiveIntegerCounter;
     }
 
     public Comment(Long id, Post post, User author, Content content) {
-        this(id, post, author, content, new LikeCounter());
+        this(id, post, author, content, new PositiveIntegerCounter());
+    }
+
+    public Comment(Long id, Post post, User author, String content) {
+        this(id, post, author, new CommentContent(content), new PositiveIntegerCounter());
     }
 
     public void updateContent(User user, String content) {
@@ -47,11 +53,11 @@ public class Comment {
         if (author.equals(user)) {
             throw new IllegalArgumentException("author cannot like own comment");
         }
-        likeCounter.increase();
+        positiveIntegerCounter.increase();
     }
 
     public void unlike() {
-        likeCounter.decrease();
+        positiveIntegerCounter.decrease();
     }
 
     public Long getId() {
@@ -71,6 +77,23 @@ public class Comment {
     }
 
     public int getLikeCount() {
-        return likeCounter.getLikeCount();
+        return positiveIntegerCounter.getCount();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

@@ -1,47 +1,48 @@
-package org.fastcampus.community_feed.post.domain.like;
+package org.fastcampus.community_feed.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.fastcampus.community_feed.common.domain.PositiveIntegerCounter;
 import org.junit.jupiter.api.Test;
 
 
-class LikeCounterTest {
+class PositiveIntegerCounterTest {
 
     @Test
     void givenCreatedWhenIncreaseThenCountIsOne() {
         // given
-        LikeCounter count = new LikeCounter();
+        PositiveIntegerCounter count = new PositiveIntegerCounter();
 
         // when
         count.increase();
 
         // then
-        assertEquals(1, count.getLikeCount());
+        assertEquals(1, count.getCount());
     }
 
     @Test
     void givenCreatedAndLikedWhenDecreaseThenCountIsOne() {
         // given
-        LikeCounter count = new LikeCounter();
+        PositiveIntegerCounter count = new PositiveIntegerCounter();
         count.increase();
 
         // when
         count.decrease();
 
         // then
-        assertEquals(0, count.getLikeCount());
+        assertEquals(0, count.getCount());
     }
 
     @Test
     void givenCreatedWhenDecreaseThenCountIsZero() {
         // given
-        LikeCounter count = new LikeCounter();
+        PositiveIntegerCounter count = new PositiveIntegerCounter();
 
         // when
         count.decrease();
 
         // then
-        assertEquals(0, count.getLikeCount());
+        assertEquals(0, count.getCount());
     }
 
 }

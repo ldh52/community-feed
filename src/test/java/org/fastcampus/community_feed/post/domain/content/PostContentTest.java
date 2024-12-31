@@ -1,19 +1,26 @@
 package org.fastcampus.community_feed.post.domain.content;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class PostContentTest {
 
     @Test
-    void givenContentLengthIsOkWhenCreatePostContentThenNotThrowError() {
+    void givenContentLengthIsOkWhenCreatePostContentThenReturnTextContext() {
         // given
-        String content = "this is a test content";
+        String contentText = "this is a test content";
 
-        // when, then
-        assertDoesNotThrow(() -> new PostContent(content));
+        // when
+        PostContent content = new PostContent(contentText);
+
+        // then
+        assertEquals(contentText, content.getContentText());
     }
 
     @Test
@@ -25,10 +32,12 @@ class PostContentTest {
         assertThrows(IllegalArgumentException.class, () -> new PostContent(content));
     }
 
-    @Test
-    void givenContentLengthIsOverLimitAndKoreanCreatePostContentThenThrowError() {
+    @ParameterizedTest
+    @ValueSource(strings = {"뷁", "닭", "굵"})
+    void givenContentLengthIsOverLimitAndKoreanCreatePostContentThenThrowError(
+        String koreanContent) {
         // given
-        String content = "뷁".repeat(501);
+        String content = koreanContent.repeat(501);
 
         // when, then
         assertThrows(IllegalArgumentException.class, () -> new PostContent(content));
@@ -43,17 +52,49 @@ class PostContentTest {
         assertThrows(IllegalArgumentException.class, () -> new PostContent(content));
     }
 
-    @Test
-    void givenContentLengthIsEmptyLimitCreatePostContentThenThrowError() {
-        // given
-        String content = "";
-
-        // when, then
+    @ParameterizedTest
+    @NullAndEmptySource
+    void givenContentLengthIsEmptyAndNullLimitCreatePostContentThenThrowError(String content) {
         assertThrows(IllegalArgumentException.class, () -> new PostContent(content));
     }
 
     @Test
-    void givenContentLengthIsNullLimitCreatePostContentThenThrowError() {
-        assertThrows(IllegalArgumentException.class, () -> new PostContent(null));
+    void givenContentLengthIsOkWhenUpdateContentThenNotThrowError() {
+        // given
+        String content = "this is a test content";
+        PostContent postContent = new PostContent(content);
+
+        // when
+        String newContent = "this is an other test content";
+        postContent.updateContent(newContent);
+
+        // then
+        assertEquals(newContent, postContent.getContentText());
+        assertTrue(postContent.isEdited());
+    }
+
+    @Test
+    void givenContentLengthIsOverLimitWhenUpdateContentThenThrowError() {
+        // given
+        String content = "this is a test content";
+        PostContent postContent = new PostContent(content);
+
+        // when, then
+        String overLimitContent = "a".repeat(501);
+        assertThrows(IllegalArgumentException.class,
+            () -> postContent.updateContent(overLimitContent));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    void givenContentLengthIsOverLimitAndKoreanWhenUpdateContentThenThrowError(
+        String nullOrEmptyContent) {
+        // given
+        String content = "this is a test content";
+        PostContent postContent = new PostContent(content);
+
+        // when, then
+        assertThrows(IllegalArgumentException.class,
+            () -> postContent.updateContent(nullOrEmptyContent));
     }
 }

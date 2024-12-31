@@ -1,7 +1,9 @@
 package org.fastcampus.community_feed.post.domain;
 
+import java.util.Objects;
+import org.fastcampus.community_feed.common.domain.PositiveIntegerCounter;
 import org.fastcampus.community_feed.post.domain.content.Content;
-import org.fastcampus.community_feed.post.domain.like.LikeCounter;
+import org.fastcampus.community_feed.post.domain.content.PostContent;
 import org.fastcampus.community_feed.user.domain.User;
 
 public class Post {
@@ -10,10 +12,10 @@ public class Post {
     private final User author;
     private final Content content;
     private PostPublicationState state;
-    private final LikeCounter likeCounter;
+    private final PositiveIntegerCounter likeCount;
 
     public Post(Long id, User author, Content content, PostPublicationState state,
-        LikeCounter likeCounter) {
+        PositiveIntegerCounter positiveIntegerCounter) {
         if (author == null) {
             throw new IllegalArgumentException("author should not be null");
         }
@@ -25,11 +27,16 @@ public class Post {
         this.author = author;
         this.content = content;
         this.state = state;
-        this.likeCounter = likeCounter;
+        this.likeCount = positiveIntegerCounter;
     }
 
     public Post(Long id, User author, Content content) {
-        this(id, author, content, PostPublicationState.PUBLIC, new LikeCounter());
+        this(id, author, content, PostPublicationState.PUBLIC, new PositiveIntegerCounter());
+    }
+
+    public Post(Long id, User author, String content) {
+        this(id, author, new PostContent(content), PostPublicationState.PUBLIC,
+            new PositiveIntegerCounter());
     }
 
     public void updateContent(User user, String content) {
@@ -43,11 +50,11 @@ public class Post {
         if (author.equals(user)) {
             throw new IllegalArgumentException("author cannot like own post");
         }
-        likeCounter.increase();
+        likeCount.increase();
     }
 
     public void unlike() {
-        likeCounter.decrease();
+        likeCount.decrease();
     }
 
     public void updateState(PostPublicationState state) {
@@ -71,6 +78,23 @@ public class Post {
     }
 
     public int getLikeCount() {
-        return likeCounter.getLikeCount();
+        return likeCount.getCount();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Post post = (Post) o;
+        return Objects.equals(id, post.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

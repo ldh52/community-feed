@@ -1,20 +1,13 @@
 package org.fastcampus.community_feed.user.domain;
 
 import java.util.Objects;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import org.fastcampus.community_feed.common.domain.PositiveIntegerCounter;
 
-@Builder
-@AllArgsConstructor
-@Getter
 public class User {
 
     private final Long id;
     private final UserInfo userInfo;
-    private final PositiveIntegerCounter followingCount;
-    private final PositiveIntegerCounter followerCount;
+    private final UserRelationCount followingCount;
+    private final UserRelationCount followerCount;
 
     public User(Long id, UserInfo userInfo) {
         if (userInfo == null) {
@@ -23,8 +16,8 @@ public class User {
 
         this.id = id;
         this.userInfo = userInfo;
-        this.followingCount = new PositiveIntegerCounter();
-        this.followerCount = new PositiveIntegerCounter();
+        this.followingCount = new UserRelationCount();
+        this.followerCount = new UserRelationCount();
     }
 
     public void follow(User followee) {
@@ -32,7 +25,7 @@ public class User {
             throw new IllegalArgumentException("");
         }
 
-        followingCount.increase();
+        followingCount.increaseCount();
         followee.increaseFollowerCount();
     }
 
@@ -41,16 +34,16 @@ public class User {
             throw new IllegalArgumentException("");
         }
 
-        followingCount.decrease();
+        followingCount.decreaseCount();
         followee.decreaseFollowerCount();
     }
 
     private void increaseFollowerCount() {
-        followerCount.increase();
+        followerCount.increaseCount();
     }
 
     private void decreaseFollowerCount() {
-        followerCount.decrease();
+        followerCount.decreaseCount();
     }
 
     public int getFollowingCount() {
@@ -61,12 +54,12 @@ public class User {
         return followerCount.getCount();
     }
 
-    public String getName() {
-        return userInfo.getName();
+    public Long getId() {
+        return id;
     }
 
-    public String getProfileImage() {
-        return userInfo.getProfileImageUrl();
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
     @Override

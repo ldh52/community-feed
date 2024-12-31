@@ -14,7 +14,8 @@ public class CommentContent extends Content {
         }
 
         if (content.length() > MAX_CONTENT_LENGTH) {
-            throw new IllegalArgumentException(String.format("comment should be under %d", MAX_CONTENT_LENGTH));
+            throw new IllegalArgumentException(
+                String.format("comment should be under %d", MAX_CONTENT_LENGTH));
         }
     }
 }

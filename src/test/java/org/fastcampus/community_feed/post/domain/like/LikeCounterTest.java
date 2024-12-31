@@ -1,10 +1,8 @@
-package org.fastcampus.community_feed.post.domain.content;
+package org.fastcampus.community_feed.post.domain.like;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.fastcampus.community_feed.post.domain.like.LikeCounter;
 import org.junit.jupiter.api.Test;
-
 
 
 class LikeCounterTest {

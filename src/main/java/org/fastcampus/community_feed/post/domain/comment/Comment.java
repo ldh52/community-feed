@@ -1,26 +1,20 @@
 package org.fastcampus.community_feed.post.domain.comment;
 
-import java.util.Objects;
-import lombok.Builder;
-import lombok.Getter;
-import org.fastcampus.community_feed.common.domain.PositiveIntegerCounter;
 import org.fastcampus.community_feed.post.domain.Post;
-import org.fastcampus.community_feed.post.domain.content.CommentContent;
 import org.fastcampus.community_feed.post.domain.content.Content;
+import org.fastcampus.community_feed.post.domain.like.LikeCounter;
 import org.fastcampus.community_feed.user.domain.User;
 
-@Getter
 public class Comment {
 
     private final Long id;
     private final Post post;
     private final User author;
     private final Content content;
-    private final PositiveIntegerCounter likeCounter;
+    private final LikeCounter likeCounter;
 
-    @Builder
     public Comment(Long id, Post post, User author, Content content,
-        PositiveIntegerCounter likeCounter) {
+        LikeCounter likeCounter) {
         if (post == null) {
             throw new IllegalArgumentException("post should not be null");
         }
@@ -39,11 +33,7 @@ public class Comment {
     }
 
     public Comment(Long id, Post post, User author, Content content) {
-        this(id, post, author, content, new PositiveIntegerCounter());
-    }
-
-    public Comment(Long id, Post post, User author, String content) {
-        this(id, post, author, new CommentContent(content), new PositiveIntegerCounter());
+        this(id, post, author, content, new LikeCounter());
     }
 
     public void updateContent(User user, String content) {
@@ -64,28 +54,23 @@ public class Comment {
         likeCounter.decrease();
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public Content getContent() {
+        return content;
+    }
+
     public int getLikeCount() {
-        return likeCounter.getCount();
-    }
-
-    public String getContentText() {
-        return content.getContentText();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
+        return likeCounter.getLikeCount();
     }
 }

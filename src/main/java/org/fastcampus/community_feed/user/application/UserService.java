@@ -1,17 +1,18 @@
 package org.fastcampus.community_feed.user.application;
 
+import lombok.RequiredArgsConstructor;
 import org.fastcampus.community_feed.user.application.dto.CreateUserRequestDto;
+import org.fastcampus.community_feed.user.application.dto.GetUserResponseDto;
 import org.fastcampus.community_feed.user.application.interfaces.UserRepository;
 import org.fastcampus.community_feed.user.domain.User;
 import org.fastcampus.community_feed.user.domain.UserInfo;
+import org.springframework.stereotype.Service;
 
+@Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public User createUser(CreateUserRequestDto dto) {
         UserInfo userInfo = new UserInfo(dto.userName(), dto.userProfileUrl());
@@ -20,7 +21,11 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return userRepository.findById(id);
+    }
+
+    public GetUserResponseDto getUserProfile(Long id) {
+        User user = getUser(id);
+        return new GetUserResponseDto(user);
     }
 }

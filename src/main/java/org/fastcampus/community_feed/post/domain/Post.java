@@ -1,19 +1,23 @@
 package org.fastcampus.community_feed.post.domain;
 
 import java.util.Objects;
+import lombok.Builder;
+import lombok.Getter;
 import org.fastcampus.community_feed.common.domain.PositiveIntegerCounter;
 import org.fastcampus.community_feed.post.domain.content.Content;
 import org.fastcampus.community_feed.post.domain.content.PostContent;
 import org.fastcampus.community_feed.user.domain.User;
 
+@Getter
 public class Post {
 
     private final Long id;
     private final User author;
     private final Content content;
     private PostPublicationState state;
-    private final PositiveIntegerCounter likeCount;
+    private final PositiveIntegerCounter likeCounter;
 
+    @Builder
     public Post(Long id, User author, Content content, PostPublicationState state,
         PositiveIntegerCounter positiveIntegerCounter) {
         if (author == null) {
@@ -27,7 +31,7 @@ public class Post {
         this.author = author;
         this.content = content;
         this.state = state;
-        this.likeCount = positiveIntegerCounter;
+        this.likeCounter = positiveIntegerCounter;
     }
 
     public Post(Long id, User author, Content content) {
@@ -39,46 +43,36 @@ public class Post {
             new PositiveIntegerCounter());
     }
 
-    public void updateContent(User user, String content) {
+    public void updateContent(User user, String content, PostPublicationState state) {
         if (!author.equals(user)) {
             throw new IllegalArgumentException("only author can update content");
         }
+
+        if (state == null) {
+            state = PostPublicationState.PUBLIC;
+        }
+
         this.content.updateContent(content);
+        this.state = state;
     }
 
     public void like(User user) {
         if (author.equals(user)) {
             throw new IllegalArgumentException("author cannot like own post");
         }
-        likeCount.increase();
+        likeCounter.increase();
     }
 
     public void unlike() {
-        likeCount.decrease();
-    }
-
-    public void updateState(PostPublicationState state) {
-        this.state = state;
-    }
-
-    public PostPublicationState getState() {
-        return state;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public Content getContent() {
-        return content;
+        likeCounter.decrease();
     }
 
     public int getLikeCount() {
-        return likeCount.getCount();
+        return likeCounter.getCount();
+    }
+
+    public String getContentText() {
+        return content.getContentText();
     }
 
     @Override

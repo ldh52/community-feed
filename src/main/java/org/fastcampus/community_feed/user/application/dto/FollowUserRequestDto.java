@@ -1,5 +1,9 @@
 package org.fastcampus.community_feed.user.application.dto;
 
-public record FollowUserRequestDto(Long userId, Long targetUserId) {
+import jakarta.validation.constraints.NotNull;
+
+public record FollowUserRequestDto
+    (@NotNull Long userId,
+     @NotNull Long targetUserId) {
 
 }

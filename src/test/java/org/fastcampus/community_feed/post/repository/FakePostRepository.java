@@ -2,7 +2,6 @@ package org.fastcampus.community_feed.post.repository;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import org.fastcampus.community_feed.post.application.interfaces.PostRepository;
 import org.fastcampus.community_feed.post.domain.Post;
 
@@ -12,8 +11,8 @@ public class FakePostRepository implements PostRepository {
 
 
     @Override
-    public Optional<Post> findById(Long id) {
-        return Optional.ofNullable(store.get(id));
+    public Post findById(Long id) {
+        return store.get(id);
     }
 
     @Override
@@ -27,5 +26,10 @@ public class FakePostRepository implements PostRepository {
         Post newPost = new Post(id, post.getAuthor(), post.getContent());
         store.put(id, newPost);
         return newPost;
+    }
+
+    @Override
+    public Post publish(Post post) {
+        return save(post);
     }
 }

@@ -2,7 +2,6 @@ package org.fastcampus.community_feed.user.repository;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import org.fastcampus.community_feed.user.application.interfaces.UserRepository;
 import org.fastcampus.community_feed.user.domain.User;
 
@@ -23,7 +22,7 @@ public class FakeUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return Optional.ofNullable(store.get(id));
+    public User findById(Long id) {
+        return store.get(id);
     }
 }

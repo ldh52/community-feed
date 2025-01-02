@@ -1,55 +1,38 @@
 package org.fastcampus.community_feed.post.repository.post_queue;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.fastcampus.community_feed.post.application.dto.GetPostContentResponseDto;
-import org.fastcampus.community_feed.post.repository.entity.like.QLikeEntity;
-import org.fastcampus.community_feed.post.repository.entity.post.QPostEntity;
-import org.fastcampus.community_feed.post.repository.entity.post.QUserPostQueueEntity;
-import org.fastcampus.community_feed.user.repository.entity.QUserEntity;
+import org.fastcampus.community_feed.post.repository.entity.post.PostEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
 public class UserPostQueueQueryRepositoryImpl {
 
-    private final JPAQueryFactory queryFactory;
-    private static final QUserPostQueueEntity userPostQueueEntity = QUserPostQueueEntity.userPostQueueEntity;
-    private static final QPostEntity postEntity = QPostEntity.postEntity;
-    private static final QUserEntity userEntity = QUserEntity.userEntity;
-    private static final QLikeEntity likeEntity = QLikeEntity.likeEntity;
+    private final UserQueueRedisRepositoryImpl queueRepository;
 
+    public UserPostQueueQueryRepositoryImpl(UserQueueRedisRepositoryImpl queueRepository) {
+        this.queueRepository = queueRepository;
+    }
+
+    @Override
     public List<GetPostContentResponseDto> getContentResponse(Long userId, Long lastContentId) {
-        return queryFactory
-            .select(
-                Projections.fields(
-                    GetPostContentResponseDto.class,
-                    postEntity.id.as("id"),
-                    postEntity.content.as("content"),
-                    userEntity.id.as("userId"),
-                    userEntity.name.as("userName"),
-                    userEntity.profileImage.as("userProfileImage"),
-                    postEntity.regDt.as("createdAt"),
-                    postEntity.updDt.as("updatedAt"),
-                    postEntity.commentCounter.as("commentCount"),
-                    postEntity.likeCount.as("likeCount"),
-                    likeEntity.isNotNull().as("isLikedByMe")
-                )
-            )
-            .from(userPostQueueEntity)
-            .join(postEntity).on(userPostQueueEntity.postId.eq(postEntity.id))
-            .join(userEntity).on(userPostQueueEntity.authorId.eq(userEntity.id))
-            .leftJoin(likeEntity).on(hasLike(userId))
-            .where(
-                userPostQueueEntity.userId.eq(userId),
-                hasLastData(lastContentId)
-            )
-            .orderBy(userPostQueueEntity.postId.desc())
-            .limit(20)
-            .fetch();
+        List<PostEntity> postEntities = queueRepository.getPostsByUserId(userId);
+
+        List<GetPostContentResponseDto> result = new ArrayList<>();
+
+        for (PostEntity postEntity : postEntities) {
+            GetPostContentResponseDto content = GetPostContentResponseDto.builder()
+                .id(postEntity.getId())
+                .content(postEntity.getContent())
+                .commentCount(postEntity.getCommentCounter())
+                .build();
+            result.add(content);
+        }
+        return result;
     }
 
     private BooleanExpression hasLastData(Long lastId) {

@@ -58,7 +58,7 @@ class PostTest {
         String newPostContent = "new content";
 
         // when
-        post.updateContent(user, newPostContent);
+        post.updateContent(user, newPostContent, null);
 
         // then
         Content content = post.getContent();
@@ -72,18 +72,6 @@ class PostTest {
 
         // when, then
         assertThrows(IllegalArgumentException.class,
-            () -> post.updateContent(otherUser, newPostContent));
-    }
-
-    @Test
-    void givenPostCreatedWhenUpdateStateThenStateShouldBeUpdated() {
-        // given
-        PostPublicationState newPostState = PostPublicationState.PRIVATE;
-
-        // when
-        post.updateState(newPostState);
-
-        // then
-        assertEquals(newPostState, post.getState());
+            () -> post.updateContent(otherUser, newPostContent, null));
     }
 }

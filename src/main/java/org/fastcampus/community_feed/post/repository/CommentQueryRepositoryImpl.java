@@ -32,7 +32,7 @@ public class CommentQueryRepositoryImpl {
                     userEntity.id.as("userId"),
                     userEntity.name.as("userName"),
                     userEntity.profileImage.as("userProfileImage"),
-                    commentEntity.likeCount.as("likeCount"),
+                    commentEntity.likeCounter.as("likeCount"),
                     commentEntity.regDt.as("createdAt"),
                     commentEntity.updDt.as("updatedAt"),
                     likeEntity.isNotNull().as("isLikedByMe")

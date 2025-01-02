@@ -8,6 +8,7 @@ import org.fastcampus.community_feed.post.application.dto.LikeRequestDto;
 import org.fastcampus.community_feed.post.application.dto.UpdatePostRequestDto;
 import org.fastcampus.community_feed.post.domain.Post;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,10 @@ public class PostController {
         return Response.ok(post.getId());
     }
 
-    @PatchMapping
-    public Response<Long> updatePost(@RequestBody UpdatePostRequestDto dto) {
-        Post post = postService.updatePost(dto);
+    @PatchMapping("/{postId}")
+    public Response<Long> updatePost(@PathVariable(name = "postId") Long postId,
+        @RequestBody UpdatePostRequestDto dto) {
+        Post post = postService.updatePost(postId, dto);
         return Response.ok(post.getId());
     }
 

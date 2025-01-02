@@ -32,9 +32,10 @@ public class CommentController {
         return Response.ok(comment.getId());
     }
 
-    @PatchMapping
-    public Response<Long> updateComment(@RequestBody UpdateCommentRequestDto dto) {
-        Comment comment = commentService.updateComment(dto);
+    @PatchMapping("/{commentId}")
+    public Response<Long> updateComment(@PathVariable(name = "commentId") Long commentId,
+        @RequestBody UpdateCommentRequestDto dto) {
+        Comment comment = commentService.updateComment(commentId, dto);
         return Response.ok(comment.getId());
     }
 

@@ -2,7 +2,6 @@ package org.fastcampus.community_feed.post.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.fastcampus.community_feed.post.application.interfaces.CommentRepository;
-import org.fastcampus.community_feed.post.domain.Post;
 import org.fastcampus.community_feed.post.domain.comment.Comment;
 import org.fastcampus.community_feed.post.repository.entity.comment.CommentEntity;
 import org.fastcampus.community_feed.post.repository.jpa.JpaCommentRepository;
@@ -27,9 +26,11 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     @Transactional
     public Comment save(Comment comment) {
-        Post targetPost = comment.getPost();
+        if (comment.getId() != null) {
+            jpaCommentRepository.updateComment(comment);
+            return comment;
+        }
         CommentEntity entity = jpaCommentRepository.save(new CommentEntity(comment));
-        jpaPostRepository.increaseCommentCounter(targetPost.getId());
         return entity.toComment();
     }
 }

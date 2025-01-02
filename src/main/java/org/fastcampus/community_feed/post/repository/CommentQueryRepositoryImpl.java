@@ -7,9 +7,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.fastcampus.community_feed.post.application.dto.GetContentResponseDto;
 import org.fastcampus.community_feed.post.repository.entity.comment.QCommentEntity;
-import org.fastcampus.community_feed.post.repository.entity.like.LikeEntity;
 import org.fastcampus.community_feed.post.repository.entity.like.LikeTarget;
-import org.fastcampus.community_feed.user.repository.entity.UserEntity;
+import org.fastcampus.community_feed.post.repository.entity.like.QLikeEntity;
+import org.fastcampus.community_feed.user.repository.entity.QUserEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,8 +18,8 @@ public class CommentQueryRepositoryImpl {
 
     private final JPAQueryFactory queryFactory;
     private static final QCommentEntity commentEntity = QCommentEntity.commentEntity;
-    private static final UserEntity userEntity = UserEntity.userEntity;
-    private static final LikeEntity likeEntity = LikeEntity.likeEntity;
+    private static final QUserEntity userEntity = QUserEntity.userEntity;
+    private static final QLikeEntity likeEntity = QLikeEntity.likeEntity;
 
     public List<GetContentResponseDto> getCommentList(Long postId, Long userId,
         Long lastContentId) {
@@ -32,7 +32,7 @@ public class CommentQueryRepositoryImpl {
                     userEntity.id.as("userId"),
                     userEntity.name.as("userName"),
                     userEntity.profileImage.as("userProfileImage"),
-                    commentEntity.likeCounter.as("likeCount"),
+                    commentEntity.likeCount.as("likeCount"),
                     commentEntity.regDt.as("createdAt"),
                     commentEntity.updDt.as("updatedAt"),
                     likeEntity.isNotNull().as("isLikedByMe")

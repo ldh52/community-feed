@@ -26,6 +26,10 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     @Transactional
     public Post save(Post post) {
+        if (post.getId() != null) {
+            jpaPostRepository.updatePost(post);
+            return post;
+        }
         PostEntity postEntity = jpaPostRepository.save(new PostEntity(post));
         return postEntity.toPost();
     }

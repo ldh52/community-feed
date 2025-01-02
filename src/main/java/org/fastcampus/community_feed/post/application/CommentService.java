@@ -38,15 +38,15 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public Comment updateComment(UpdateCommentRequestDto dto) {
-        Comment comment = getComment(dto.commentId());
+    public Comment updateComment(Long commentId, UpdateCommentRequestDto dto) {
+        Comment comment = getComment(commentId);
         User author = userService.getUser(dto.authorId());
         comment.updateContent(author, dto.content());
         return commentRepository.save(comment);
     }
 
     public void likeComment(LikeRequestDto dto) {
-        Comment comment = getComment(dto.id());
+        Comment comment = getComment(dto.targetId());
         User user = userService.getUser(dto.userId());
 
         if (likeRepository.checkLike(comment, user)) {
@@ -58,7 +58,7 @@ public class CommentService {
     }
 
     public void unlikeComment(LikeRequestDto dto) {
-        Comment comment = getComment(dto.id());
+        Comment comment = getComment(dto.targetId());
         User user = userService.getUser(dto.userId());
 
         if (likeRepository.checkLike(comment, user)) {

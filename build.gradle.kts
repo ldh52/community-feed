@@ -21,9 +21,6 @@ dependencies {
     // mysql
     runtimeOnly("com.mysql:mysql-connector-j")
 
-    // h2
-    implementation("com.h2database:h2")
-
     // lombok
     implementation("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -38,6 +35,9 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    testImplementation("io.rest-assured:rest-assured:5.5.0")
+    runtimeOnly("com.h2database:h2")
 }
 
 tasks.test {

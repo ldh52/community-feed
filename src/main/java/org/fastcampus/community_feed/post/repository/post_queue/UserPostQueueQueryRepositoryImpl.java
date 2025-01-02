@@ -35,7 +35,7 @@ public class UserPostQueueQueryRepositoryImpl {
                     postEntity.regDt.as("createdAt"),
                     postEntity.updDt.as("updatedAt"),
                     postEntity.commentCounter.as("commentCount"),
-                    postEntity.likeCounter.as("likeCount"),
+                    postEntity.likeCount.as("likeCount"),
                     likeEntity.isNotNull().as("isLikedByMe")
                 )
             )
